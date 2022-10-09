@@ -1,5 +1,7 @@
 const tf = require('@tensorflow/tfjs');
 
+/*
+** First block
 function setup(){
     //const data = tf.tensor([1, 2, 3, 4, 5, 6, 8 ,5, 2,4,8,9], [3,2,2]);
     //data.print();
@@ -27,5 +29,38 @@ console.log(vts);
  //ts.print();
 //  data returns a promise, because of data being retrieved from GPU.
 // console.log(ts.dataSync());
+*/
+
+const v2 = [1, 2, 3, 4, 5, 6];
+const shape2 = [2,3];
+
+const ts2 = tf.tensor(v2, shape2, 'int32');
+const ts2_2 = tf.tensor(v2, shape2, 'int32');
+
+ts2.print()
+
+console.log(tf.memory().numTensors);
+
+ts2.dispose(); // This fixes the memory leak
+
+console.log(tf.memory().numTensors);
+
+ts2_2.dispose();
+
+console.log(tf.memory().numTensors); // now there are no tensors stored in GPU memory, hence avoiding GPU memory leack.
+
+// tidy is very useful when I want to free up the memory when I'm done
+tf.tidy(myStuff);
+
+function myStuff(){
+    const a = tf.tensor2d(v2, shape2, 'int32');
+    const b = tf.tensor2d(v2, shape2, 'int32');
+    const c = a.add(b);
+    console.log("********* printing test");
+    console.log(tf.memory().numTensors);
+    c.print();
+}
+console.log(tf.memory().numTensors); // memory is now free from the tensors created in the "myStuff".
+
 
 
